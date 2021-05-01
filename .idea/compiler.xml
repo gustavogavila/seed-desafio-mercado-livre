@@ -7,14 +7,17 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="mercadolivre" />
+        <module name="casadocodigo" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="casadocodigo" target="1.8" />
       <module name="mercadolivre" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="casadocodigo" options="-parameters" />
       <module name="mercadolivre" options="-parameters" />
     </option>
   </component>
