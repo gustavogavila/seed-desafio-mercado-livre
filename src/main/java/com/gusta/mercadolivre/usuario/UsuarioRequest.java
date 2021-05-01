@@ -25,6 +25,10 @@ public class UsuarioRequest {
         this.criadoEm = Instant.now();
     }
 
+    public String getLogin() {
+        return login;
+    }
+
     public Usuario toModel() {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return new Usuario(login, passwordEncoder.encode(senha), criadoEm);
