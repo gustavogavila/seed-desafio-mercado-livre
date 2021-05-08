@@ -33,4 +33,16 @@ public class Usuario {
         this.senha = senha;
         this.criadoEm = criadoEm;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
 }
