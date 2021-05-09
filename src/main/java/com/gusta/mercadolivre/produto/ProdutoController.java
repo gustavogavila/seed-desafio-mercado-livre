@@ -1,6 +1,10 @@
 package com.gusta.mercadolivre.produto;
 
+import com.gusta.mercadolivre.seguranca.MyUserDetails;
+import com.gusta.mercadolivre.usuario.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +24,10 @@ public class ProdutoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<Produto> criar(@Valid @RequestBody ProdutoRequest request) {
-        Produto produto = request.toModel(entityManager);
+    public ResponseEntity<Void> criar(@Valid @RequestBody ProdutoRequest request,
+                                         @AuthenticationPrincipal MyUserDetails usuarioLogado) {
+        Produto produto = request.toModel(entityManager, usuarioLogado.getId());
         entityManager.persist(produto);
-        return ResponseEntity.ok(produto);
+        return ResponseEntity.ok().build();
     }
 }

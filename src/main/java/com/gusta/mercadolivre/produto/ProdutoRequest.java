@@ -2,6 +2,8 @@ package com.gusta.mercadolivre.produto;
 
 import com.gusta.mercadolivre.categoria.Categoria;
 import com.gusta.mercadolivre.compartilhado.annotations.ExistsId;
+import com.gusta.mercadolivre.usuario.Usuario;
+import com.gusta.mercadolivre.usuario.UsuarioRepository;
 import io.jsonwebtoken.lang.Assert;
 
 import javax.persistence.EntityManager;
@@ -60,11 +62,13 @@ public class ProdutoRequest {
                 '}';
     }
 
-    public Produto toModel(EntityManager entityManager) {
+    public Produto toModel(EntityManager entityManager, Long usuarioLogadoId) {
         Categoria categoria = entityManager.find(Categoria.class, categoriaId);
         Assert.state(nonNull(categoria), "Categoria informada não encontrada. Id = " + categoriaId);
+        Usuario usuario = entityManager.find(Usuario.class, usuarioLogadoId);
+        Assert.state(nonNull(usuario), "Usuário logado deveria existir nesse ponto. Id: = " + usuarioLogadoId);
         Function<Produto, Set<CaracteristicaProduto>> caracteristicasFn = gerarCaracteristicas(caracteristicas);
-        return new Produto(nome, valor, quantidadeDisponivel, descricao, caracteristicasFn, categoria);
+        return new Produto(nome, valor, quantidadeDisponivel, descricao, caracteristicasFn, categoria, usuario);
     }
 
     private Function<Produto, Set<CaracteristicaProduto>> gerarCaracteristicas(Set<String> caracteristicas) {

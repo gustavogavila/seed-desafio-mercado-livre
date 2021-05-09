@@ -12,6 +12,7 @@ public class MyUserDetails implements UserDetails {
     private String senha;
 
     public MyUserDetails(Long id, String login, String senha) {
+        this.id = id;
         this.login = login;
         this.senha = senha;
     }

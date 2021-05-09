@@ -1,6 +1,7 @@
 package com.gusta.mercadolivre.produto;
 
 import com.gusta.mercadolivre.categoria.Categoria;
+import com.gusta.mercadolivre.usuario.Usuario;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -40,6 +41,10 @@ public class Produto {
     @ManyToOne
     private Categoria categoria;
 
+    @NotNull
+    @ManyToOne
+    private Usuario usuario;
+
     private Instant criadoEm;
 
     @Deprecated
@@ -47,7 +52,8 @@ public class Produto {
     }
 
     public Produto(String nome, BigDecimal valor, Integer quantidadeDisponivel, String descricao,
-                   Function<Produto, Set<CaracteristicaProduto>> caracteristicasFn, Categoria categoria) {
+                   Function<Produto, Set<CaracteristicaProduto>> caracteristicasFn, Categoria categoria,
+                   Usuario usuarioLogado) {
         this.nome = nome;
         this.valor = valor;
         this.quantidadeDisponivel = quantidadeDisponivel;
@@ -55,5 +61,6 @@ public class Produto {
         this.caracteristicas = caracteristicasFn.apply(this);
         this.categoria = categoria;
         this.criadoEm = Instant.now();
+        usuario = usuarioLogado;
     }
 }
