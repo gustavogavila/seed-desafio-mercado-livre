@@ -5,10 +5,9 @@ import com.gusta.mercadolivre.usuario.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,6 +20,14 @@ public class ProdutoController {
 
     @PersistenceContext
     EntityManager entityManager;
+
+    @Autowired
+    private CaracteristicasDiferentesValidator caracteristicasDiferentesValidator;
+
+    @InitBinder
+    public void init(WebDataBinder binder) {
+        binder.addValidators(caracteristicasDiferentesValidator);
+    }
 
     @PostMapping
     @Transactional
