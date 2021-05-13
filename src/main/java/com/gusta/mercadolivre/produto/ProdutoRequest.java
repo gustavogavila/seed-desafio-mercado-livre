@@ -3,12 +3,14 @@ package com.gusta.mercadolivre.produto;
 import com.gusta.mercadolivre.categoria.Categoria;
 import com.gusta.mercadolivre.compartilhado.annotations.ExistsId;
 import com.gusta.mercadolivre.usuario.Usuario;
-import com.gusta.mercadolivre.usuario.UsuarioRepository;
 import io.jsonwebtoken.lang.Assert;
 
 import javax.persistence.EntityManager;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -34,14 +36,14 @@ public class ProdutoRequest {
 
     @NotEmpty
     @Size(min = 3, message = "Precisa haver, no mínimo, 3 características")
-    private Set<String> caracteristicas;
+    private List<CaracteristicaProdutoRequest> caracteristicas;
 
     @NotNull
     @ExistsId(domainClass = Categoria.class, fieldName = "id")
     private Long categoriaId;
 
     public ProdutoRequest(String nome, BigDecimal valor, Integer quantidadeDisponivel, String descricao,
-                          Set<String> caracteristicas, Long categoriaId) {
+                          List<CaracteristicaProdutoRequest> caracteristicas, Long categoriaId) {
         this.nome = nome;
         this.valor = valor;
         this.quantidadeDisponivel = quantidadeDisponivel;
@@ -50,16 +52,8 @@ public class ProdutoRequest {
         this.categoriaId = categoriaId;
     }
 
-    @Override
-    public String toString() {
-        return "ProdutoRequest{" +
-                "nome='" + nome + '\'' +
-                ", valor=" + valor +
-                ", quantidadeDisponivel=" + quantidadeDisponivel +
-                ", descricao='" + descricao + '\'' +
-                ", caracteristicas=" + caracteristicas +
-                ", categoriaId=" + categoriaId +
-                '}';
+    public List<CaracteristicaProdutoRequest> getCaracteristicas() {
+        return caracteristicas;
     }
 
     public Produto toModel(EntityManager entityManager, Long usuarioLogadoId) {
@@ -71,9 +65,21 @@ public class ProdutoRequest {
         return new Produto(nome, valor, quantidadeDisponivel, descricao, caracteristicasFn, categoria, usuario);
     }
 
-    private Function<Produto, Set<CaracteristicaProduto>> gerarCaracteristicas(Set<String> caracteristicas) {
+    private Function<Produto, Set<CaracteristicaProduto>> gerarCaracteristicas(
+            List<CaracteristicaProdutoRequest> caracteristicas) {
         return (produto -> caracteristicas.stream().map(
-                c -> new CaracteristicaProduto(c, produto)).collect(Collectors.toSet()));
+                c -> c.toModel(produto)).collect(Collectors.toSet()));
+    }
+
+    public String buscarCaracteristicasIguais() {
+        List<String> nomesIguais = new ArrayList<>();
+        Set<String> nomesDiferentes = new HashSet<>();
+        for (CaracteristicaProdutoRequest c : caracteristicas) {
+            if (!nomesDiferentes.add(c.getNome())) {
+                nomesIguais.add(c.getNome());
+            }
+        }
+        return nomesIguais.stream().map(String::valueOf).collect(Collectors.joining(","));
     }
 }
 
