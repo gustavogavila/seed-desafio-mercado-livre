@@ -74,6 +74,7 @@ public class ProdutoRequest {
     public String buscarCaracteristicasIguais() {
         List<String> nomesIguais = new ArrayList<>();
         Set<String> nomesDiferentes = new HashSet<>();
+
         for (CaracteristicaProdutoRequest c : caracteristicas) {
             if (!nomesDiferentes.add(c.getNome())) {
                 nomesIguais.add(c.getNome());
