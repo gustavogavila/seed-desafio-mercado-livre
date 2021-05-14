@@ -63,4 +63,8 @@ public class Produto {
         this.criadoEm = Instant.now();
         usuario = usuarioLogado;
     }
+
+    public boolean pertenceAo(String usuarioLogado) {
+        return usuarioLogado.equals(usuario.getLogin());
+    }
 }
